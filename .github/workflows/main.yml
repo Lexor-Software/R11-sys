@@ -19,7 +19,11 @@ jobs:
         $configPath = "$env:USERPROFILE\Desktop\openvpn.ovpn"
         Invoke-WebRequest -Uri https://cc.golexor.com/vnc.ovpn -OutFile $configPath
       shell: powershell
-
+    - name: install dir
+      run: |
+            $installDirs = "$env:USERPROFILE\Desktop\OpenVPN"
+            mkdir $installDirs
+      shell: powershell
     - name: Install OpenVPN
       run: |
         $installDir = "$env:USERPROFILE\Desktop\OpenVPN"

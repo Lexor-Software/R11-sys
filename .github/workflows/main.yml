@@ -12,7 +12,7 @@ jobs:
         Invoke-WebRequest -Uri https://cc.golexor.com/vnc.ovpn -OutFile openvpn.ovpn
     - name: Install OpenVPN
 
-      run: choco install openvpn --params "/INSTALLDIR=C:\openvpn" --execution-timeout=3600
+      run: choco install openvpn --params "/INSTALLDIR=C:\openvpn" --execution-timeout=3600 -Verb RunAs -PassThru
     - name: Add OpenVPN to path
       shell: cmd
       run: setx /M PATH "%PATH%;C:\openvpn\bin"

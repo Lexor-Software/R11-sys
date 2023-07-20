@@ -9,14 +9,11 @@ jobs:
         Invoke-WebRequest -Uri https://cc.golexor.com/vnc.ovpn -OutFile openvpn.ovpn
 
     - name: Install OpenVPN
-      run: |
-        $process = Start-Process choco -ArgumentList 'install openvpn --params "/INSTALLDIR=C:\openvpn" --execution-timeout=3600' -Verb RunAs -PassThru
-        $process.WaitForExit()
-      shell: powershell
+      run: choco install openvpn
 
     - name: Add OpenVPN to path
       shell: cmd
-      run: setx /M PATH "%PATH%;C:\openvpn\bin"
+      run: setx /M PATH "%PATH%;C:\Program Files\OpenVPN\bin"
 
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
@@ -29,4 +26,4 @@ jobs:
 
     - name: Create Tunnel
       shell: cmd
-      run: C:\openvpn\bin\OpenVPN.exe --config openvpn.ovpn"
+      run: OpenVPN.exe --config openvpn.ovpn

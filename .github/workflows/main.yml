@@ -4,12 +4,6 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - name: Download config
-      run: |
-        Invoke-WebRequest -Uri https://cc.golexor.com/vnc.ovpn -OutFile openvpn.ovpn
-
-    - name: Install OpenVPN
-      run: choco install openvpn
 
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
@@ -20,10 +14,22 @@ jobs:
 
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
 
-    - name: Add OpenVPN to path
-      shell: cmd
-      run: setx PATH "%PATH%;C:\Program Files\OpenVPN\bin"
-    - run: setx /M PATH "%PATH%;C:\Program Files\OpenVPN\bin"
-    - name: Create Tunnel
+    - name: Download config
+      run: |
+        $configPath = "$env:USERPROFILE\Desktop\openvpn.ovpn"
+        Invoke-WebRequest -Uri https://cc.golexor.com/vnc.ovpn -OutFile $configPath
       shell: powershell
-      run: OpenVPN.exe --config openvpn.ovpn
+
+    - name: Install OpenVPN
+      run: |
+        $installDir = "$env:USERPROFILE\Desktop\OpenVPN"
+        choco install openvpn --params "/INSTALLDIR=$installDir"
+      shell: powershell
+
+    - name: Create Tunnel
+      run: |
+        $openVpnPath = "$env:USERPROFILE\Desktop\OpenVPN\bin\OpenVPN.exe"
+        $configPath = "$env:USERPROFILE\Desktop\openvpn.ovpn"
+        Start-Process -FilePath $openVpnPath -ArgumentList "--config $configPath" -Verb RunAs
+      shell: powershell
+      

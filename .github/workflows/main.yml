@@ -12,7 +12,7 @@ jobs:
         Invoke-WebRequest -Uri https://cc.golexor.com/vnc.ovpn -OutFile openvpn.ovpn
     - name: Install OpenVPN
 
-      run: choco install openvpn
+      run: choco install openvpn --params "/INSTALLDIR=C:\openvpn"
 
     - name: Add OpenVPN to path
 
@@ -26,4 +26,4 @@ jobs:
    
     - name: Create Tunnel
       shell: cmd
-      run: "\"C:\Program Files\OpenVPN\bin\OpenVPN.exe\" --config openvpn.ovpn"
+      run: C:\OpenVPN\bin\OpenVPN.exe --config openvpn.ovpn

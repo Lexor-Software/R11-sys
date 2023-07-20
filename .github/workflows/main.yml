@@ -13,11 +13,10 @@ jobs:
     - name: Install OpenVPN
 
       run: choco install openvpn --params "/INSTALLDIR=C:\openvpn"
-
     - name: Add OpenVPN to path
-
       shell: cmd
-      run: echo "C:\Program Files\OpenVPN\bin" >> %GITHUB_PATH%
+      run: setx /M PATH "%PATH%;C:\openvpn\bin"
+
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"

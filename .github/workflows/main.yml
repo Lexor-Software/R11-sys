@@ -21,12 +21,13 @@ jobs:
       shell: powershell
 
     - name: Install OpenVPN
-      run: choco install openvpn
+      run: choco install -y openvpn --package-parameters="/InstallDir=C:\Tools\OpenVPN /AddToDesktop /Gui /GuiOnLogon /EasyRsa /DcoDriver /TapDriver /WintunDriver /OpenSSL"
      
 
     - name: Create Tunnel
       run: |
-        $openVpnPath = "$env:C:\ProgramData\chocolatey\lib-bad\openvpn\2.6.5.1\bin\OpenVPN.exe"
+        dir C:\Tools\OpenVPN
+        $openVpnPath = "$env:C:\Tools\OpenVPN\bin\OpenVPN.exe"
         $configPath = "$env:USERPROFILE\Desktop\openvpn.ovpn"
         Start-Process -FilePath $openVpnPath -ArgumentList "--config $configPath" -Verb RunAs
       shell: powershell

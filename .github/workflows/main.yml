@@ -4,25 +4,29 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-
     - name: Download config
-
       run: |
-
         Invoke-WebRequest -Uri https://cc.golexor.com/vnc.ovpn -OutFile openvpn.ovpn
-    - name: Install OpenVPN
 
-      run: choco install openvpn --params "/INSTALLDIR=C:\openvpn" --execution-timeout=3600 -Verb RunAs -PassThru
+    - name: Install OpenVPN
+      run: |
+        $process = Start-Process choco -ArgumentList 'install openvpn --params "/INSTALLDIR=C:\openvpn" --execution-timeout=3600' -Verb RunAs -PassThru
+        $process.WaitForExit()
+      shell: powershell
+
     - name: Add OpenVPN to path
       shell: cmd
       run: setx /M PATH "%PATH%;C:\openvpn\bin"
 
     - name: Enable TS
       run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+
     - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
     - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+
     - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
-   
+
     - name: Create Tunnel
       shell: cmd
-      run: C:\OpenVPN\bin\OpenVPN.exe --config openvpn.ovpn
+      run: C:\openvpn\bin\OpenVPN.exe --config openvpn.ovpn"
